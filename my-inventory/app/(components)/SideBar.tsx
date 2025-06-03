@@ -1,14 +1,16 @@
 
 import React from 'react'
-import { Menu } from 'lucide-react'
+import { SquareDashedIcon ,Menu, Archive, Clipboard, User, SlidersHorizontal, DollarSignIcon} from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../redux'
 import { setIsSidebarCollapsed } from '../(state)'
+import SideBarLink from './SideBarLink'
+
 
 type Props = {}
 
 const SideBar = (props: Props) => {
-  const dispatch = useAppDispatch();
-  const isSidebarCollapsed = useAppSelector((state)=>state.global.isSidebarCollapsed)
+const dispatch = useAppDispatch();
+const isSidebarCollapsed = useAppSelector((state)=>state.global.isSidebarCollapsed)
 const sidebarClassNames = `fixed flex flex-col ${
     isSidebarCollapsed ? "w-0 md:w-16" : "w-72 md:w-64"
   } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`;
@@ -21,9 +23,9 @@ const sidebarClassNames = `fixed flex flex-col ${
   return (
     <div className={sidebarClassNames}>
         {/* Top Section */}
-        <div className='flex gap-3 md:justify-normal items-center justify-center p-5'>
+        <div className={`flex gap-3 md:justify-normal items-center justify-center p-5 ${isSidebarCollapsed ? 'px-5' : 'px-7'}`}>
             <div>Logo</div>
-            <h1>Tun Kraway Soe</h1>
+            <h1 className={`${isSidebarCollapsed ? 'hidden' : 'block'} text-2xl font-extrabold `}>Tun K Soe</h1>
             <button 
             className="p-2 md:hidden bg-gray-100 rounded-full hover:bg-blue-100"
             onClick={toggleSideBar}
@@ -33,6 +35,47 @@ const sidebarClassNames = `fixed flex flex-col ${
         </div>
         {/* Middel section with links */}
         <div>
+        <SideBarLink
+          href="/dashboard"
+          icon={SquareDashedIcon} 
+          Label="Dashboard"
+          isCollapsed={isSidebarCollapsed}
+        />
+        <SideBarLink
+          href="/inventory"
+          icon={Archive} 
+          Label="Inventory"
+          isCollapsed={isSidebarCollapsed}
+        />
+        <SideBarLink
+          href="/clipboard"
+          icon={Clipboard} 
+          Label="Clipboard"
+          isCollapsed={isSidebarCollapsed}
+        />
+        <SideBarLink
+          href="/users"
+          icon={User} 
+          Label="Users"
+          isCollapsed={isSidebarCollapsed}
+        />
+        <SideBarLink
+          href="/settings"
+          icon={SlidersHorizontal} 
+          Label="Settings"
+          isCollapsed={isSidebarCollapsed}
+        />
+        <SideBarLink
+          href="/expenses"
+          icon={DollarSignIcon} 
+          Label="Expenses"
+          isCollapsed={isSidebarCollapsed}
+        /> 
+        
+        
+        
+        
+          
 
         </div>
         {/* Footer */}
