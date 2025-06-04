@@ -60,7 +60,7 @@ const NavBar = () => {
             height={40}
             className="rounded-full object-cover"
           />
-          <span className="font-semibold">Ed Roh</span>
+          <span className="font-semibold">T K Soe</span>
         </div>
         </div>
         <Link href='/settings'>
