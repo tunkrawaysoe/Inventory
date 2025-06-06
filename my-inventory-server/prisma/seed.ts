@@ -1,11 +1,13 @@
-import { PrismaClient } from "@prisma/client";
-import fs from "fs";
-import path from "path";
+import { PrismaClient } from '../generated/prisma';
+import fs from 'fs';
+import path from 'path';
+
 const prisma = new PrismaClient();
 
 async function deleteAllData(orderedFileNames: string[]) {
   const modelNames = orderedFileNames.map((fileName) => {
     const modelName = path.basename(fileName, path.extname(fileName));
+    // Capitalize model name to match Prisma client property
     return modelName.charAt(0).toUpperCase() + modelName.slice(1);
   });
 
@@ -23,27 +25,43 @@ async function deleteAllData(orderedFileNames: string[]) {
 }
 
 async function main() {
-  const dataDirectory = path.join(__dirname, "seedData");
+  const dataDirectory = path.join(__dirname, 'seedData');
 
-  const orderedFileNames = [
-    "products.json",
-    "expenseSummary.json",
-    "sales.json",
-    "salesSummary.json",
-    "purchases.json",
-    "purchaseSummary.json",
-    "users.json",
-    "expenses.json",
-    "expenseByCategory.json",
+  // Delete dependent records first to avoid FK constraint errors
+  const deleteOrder = [
+    'sales.json',
+    'purchases.json',
+    'expenseByCategory.json',
+    'salesSummary.json',
+    'purchaseSummary.json',
+    'expenseSummary.json',
+    'products.json',
+    'users.json',
+    'expenses.json',
   ];
 
-  await deleteAllData(orderedFileNames);
+  // Seed parents first, then dependents
+  const seedOrder = [
+    'products.json',
+    'users.json',
+    'expenses.json',
+    'expenseSummary.json',
+    'expenseByCategory.json',
+    'sales.json',
+    'salesSummary.json',
+    'purchases.json',
+    'purchaseSummary.json',
+  ];
 
-  for (const fileName of orderedFileNames) {
+  // Delete all data in correct order
+  await deleteAllData(deleteOrder);
+
+  // Seed data in correct order
+  for (const fileName of seedOrder) {
     const filePath = path.join(dataDirectory, fileName);
-    const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     const modelName = path.basename(fileName, path.extname(fileName));
-    const model: any = prisma[modelName as keyof typeof prisma];
+    const model: any = prisma[modelName.charAt(0).toUpperCase() + modelName.slice(1) as keyof typeof prisma];
 
     if (!model) {
       console.error(`No Prisma model matches the file name: ${fileName}`);
